@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Attendance</title>
+  <style>
+    body {
+        background-color: #f0f8ff;
+        transition: background-color 0.5s ease;
+    }
+    body:hover {
+        background-color: #e6f7ff;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
+  </style>
+</head>
+<body>
+<h1>Manage Attendance</h1>
+<form th:action="@{/attendance}" method="get">
+  <label for="date">Select Date:</label>
+  <input type="date" id="date" name="date" required>
+  <button type="submit">View Attendance</button>
+</form>
+<div th:if="${students != null}">
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Attendance</th>
+      <th>Actions</th>
+    </tr>
+    <tr th:each="student : ${students}">
+      <td th:text="${student.id}"></td>
+      <td th:text="${student.name}"></td>
+      <td th:text="${student.attendance}"></td>
+      <td>
+        <form th:action="@{/updateAttendance/{id}(id=${student.id})}" method="post">
+          <select name="attendance">
+            <option value="Present" th:selected="${student.attendance == 'Present'}">Present</option>
+            <option value="Absent" th:selected="${student.attendance == 'Absent'}">Absent</option>
+          </select>
+          <button type="submit">Update</button>
+        </form>
+      </td>
+    </tr>
+  </table>
+</div>
+<a href="/teacherDashboard">Back to Dashboard</a>
+</body>
+</html>
