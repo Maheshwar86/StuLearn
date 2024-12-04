@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Admin Dashboard</title>
   <style>
     body {
-        background-color: #f0f8ff;
-        transition: background-color 0.5s ease;
+        background: linear-gradient(to bottom, #87CEEB, #8A2BE2); /* Blue to violet gradient */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
     }
-    body:hover {
-        background-color: #e6f7ff;
+    h1 {
+        font-size: 4em; /* Larger title */
+        margin-bottom: 20px;
+        animation: fadeIn 2s ease-in-out;
+    }
+    .button-container {
+        display: flex;
+        flex-direction: column; /* Buttons in a single column */
+        gap: 20px;
     }
     .button {
         padding: 15px 25px;
@@ -19,22 +31,37 @@
         cursor: pointer;
         outline: none;
         color: #fff;
-        background-color: #4CAF50;
+        background-color: #0000FF; /* Blue button color */
         border: none;
         border-radius: 15px;
         box-shadow: 0 9px #999;
     }
-    .button:hover {background-color: #3e8e41}
+    .button:hover {
+        background-color: #8A2BE2; /* Violet hover color */
+    }
     .button:active {
-        background-color: #3e8e41;
+        background-color: #8A2BE2;
         box-shadow: 0 5px #666;
         transform: translateY(4px);
+    }
+    .logo {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
     }
   </style>
 </head>
 <body>
-<h1>Dashboard</h1>
-<button class="button" onclick="location.href='/teacherDashboard'">Teacher</button>
-<button class="button" onclick="location.href='/studentDashboard'">Student</button>
+<h1>Student Learning Zone</h1>
+<img src="https://res.cloudinary.com/duhki4wze/image/upload/v1731992346/dwlnkngsdzwkuqs0uxdk.png" alt="Logo" class="logo">
+<div class="button-container">
+  <button class="button" onclick="location.href='/teacherLogin'">Teacher</button>
+  <button class="button" onclick="location.href='/login'">Student</button>
+  <button class="button" onclick="location.href='/adminLogin'">Administrator</button>
+</div>
 </body>
 </html>

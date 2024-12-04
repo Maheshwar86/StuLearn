@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            animation: backgroundChange 10s infinite;
+        }
+        @keyframes backgroundChange {
+            0% { background-color: #f4f4f4; }
+            25% { background-color: #e6f7ff; }
+            50% { background-color: #d1e7ff; }
+            75% { background-color: #cceeff; }
+            100% { background-color: #f4f4f4; }
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        #quizScreen, #resultScreen {
+            display: none;
+        }
+        .option {
+            display: block;
+            margin: 10px 0;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+        .option label {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .option:hover label {
+            color: #007BFF;
+        }
+        .button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #result {
+            font-size: 1.5em;
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>C++ Quiz</h1>
+    <div id="startScreen">
+        <label for="name">Enter your name: </label>
+        <input type="text" id="name" required>
+        <button class="button" onclick="startQuiz()">Start Quiz</button>
+    </div>
+    <div id="quizScreen">
+        <h2 id="questionNumber"></h2>
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <button class="button" id="nextButton" onclick="nextQuestion()">Next</button>
+        <button class="button" id="submitButton" onclick="submitAnswer()">Submit</button>
+    </div>
+    <div id="resultScreen">
+        <h2 id="result"></h2>
+        <button class="button" onclick="location.reload()">Retry</button>
+    </div>
+</div>
+<script>
+    const questions = [
+        {text: 'What is a correct syntax to output "Hello World" in C++?', options: ['echo("Hello World");', 'Console.WriteLine("Hello World");', 'System.out.println("Hello World");', 'cout << "Hello World";'], correct: 3},
+        {text: 'Which of the following is used to define a block of code in C++?', options: ['()', '[]', '{}', '<>'], correct: 2},
+        {text: 'What is a correct syntax to output "Hello World" in C++?', options: ['echo("Hello World");', 'Console.WriteLine("Hello World");', 'System.out.println("Hello World");', 'cout << "Hello World";'], correct: 3}, {text: 'Which of the following is used to define a block of code in C++?', options: ['()', '[]', '{}', '<>'], correct: 2}, {text: 'Which of the following is a correct comment in C++?', options: ['// This is a comment', '/* This is a comment */', '# This is a comment', '-- This is a comment'], correct: 0}, {text: 'Which of the following is the proper syntax to declare a variable in C++?', options: ['var a = 5;', 'int a = 5;', 'a := 5;', 'int a := 5;'], correct: 1}, {text: 'Which of the following access specifiers is used as a default in a class definition?', options: ['public', 'private', 'protected', 'None of the above'], correct: 1}, {text: 'What is the output of the following code: cout << sizeof(char); ?', options: ['1', '2', '4', '8'], correct: 0}, {text: 'What is the correct way to create an object of class named "MyClass"?', options: ['MyClass obj = new MyClass();', 'MyClass obj();', 'MyClass obj;', 'class MyClass obj;'], correct: 2}, {text: 'Which header file is required to use file streams in C++?', options: ['<iostream>', '<fstream>', '<string>', '<stdlib.h>'], correct: 1}, {text: 'Which of the following correctly declares an array of integers in C++?', options: ['int arr[5];', 'array int arr[5];', 'int arr;', 'int array[5];'], correct: 0}, {text: 'What is the output of the following code: cout << 3 / 2;', options: ['1', '1.5', '2', '0'], correct: 0}, {text: 'What is a destructor in C++?', options: ['A method which can be called at any time', 'A special method which is called automatically when an object is destroyed', 'A method to destroy objects manually', 'None of the above'], correct: 1}, {text: 'Which of the following is used to define a macro in C++?', options: ['#macro', '#define', '#include', '#ifdef'], correct: 1}, {text: 'What does the "new" keyword do in C++?', options: ['It creates a new variable', 'It creates a new array', 'It allocates memory for a variable or object', 'It defines a new class'], correct: 2}, {text: 'Which of the following operators cannot be overloaded in C++?', options: ['+', '-', '::', '*'], correct: 2}, {text: 'What is the use of the "this" pointer in C++?', options: ['To refer to the current object of the class', 'To refer to the superclass of the class', 'To refer to the derived class of the class', 'None of the above'], correct: 0}, {text: 'What is the purpose of the keyword "virtual" in a base class method declaration?', options: ['To indicate that the method is only accessible within the base class', 'To indicate that the method can be overridden in a derived class', 'To indicate that the method cannot be overridden', 'To indicate that the method is static'], correct: 1}, {text: 'Which of the following is used to inherit a class in C++?', options: [':', '::', '<', '>'], correct: 0}, {text: 'What is the output of the following code: for(int i = 0; i < 5; i++) { if(i == 3) break; cout << i; }', options: ['012', '01234', '0123', 'None of the above'], correct: 0}, {text: 'What is the correct syntax for a for loop in C++?', options: ['for(int i = 0; i < 10; i++)', 'for i in range(10)', 'foreach(int i in range(10))', 'for(int i = 0; i < 10; i++) {}'], correct: 3}, {text: 'Which of the following function prototypes is the correct one for a function named "myFunction" which returns an integer and takes two integer parameters?', options: ['int myFunction(int a, int b);', 'int myFunction(a, b);', 'myFunction(int a, int b);', 'function myFunction(int a, int b);'], correct: 0}, {text: 'Which type is provided by C++ but not by C?', options: ['double', 'float', 'int', 'bool'], correct: 3}, {text: 'Which of the following statements is correct?', options: ['C++ supports operator overloading', 'C++ does not support operator overloading', 'C++ supports function overloading', 'Both a and c'], correct: 3}, {text: 'Which of the following keywords is used to handle exceptions in C++?', options: ['try', 'catch', 'throw', 'all of the above'], correct: 3}, {text: 'What is the output of the following code: int x = 0; x += 5; cout << x;', options: ['0', '5', '10', 'None of the above'], correct: 1}, {text: 'Which of the following statements about C++ is false?', options: ['C++ supports inheritance', 'C++ supports polymorphism', 'C++ supports encapsulation', 'C++ supports garbage collection'], correct: 3}, {text: 'What is a namespace in C++?', options: ['A feature to allocate memory', 'A feature to group entities like classes, objects and functions under a name', 'A feature to create a new class', 'None of the above'], correct: 1}, {text: 'What does STL stand for in C++?', options: ['Standard Template Library', 'Standard Tools Library', 'Simple Template Library', 'Simple Tools Library'], correct: 0}, {text: 'Which of the following correctly declares a pointer to an integer in C++?', options: ['int ptr;', 'int* ptr;', 'int &ptr;', 'int ptr[5];'], correct: 1}, {text: 'What is the purpose of the "inline" keyword in C++?', options: ['To declare an inline function', 'To define a template function', 'To define a recursive function', 'To allocate memory dynamically'], correct: 0},
+        {text: 'Which of the following is a correct comment in C++?', options: ['// This is a comment', '/* This is a comment */', '# This is a comment', '-- This is a comment'], correct: 0}
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let playerName = '';
+
+    function startQuiz() {
+        playerName = document.getElementById('name').value;
+        if (playerName === '') {
+            alert('Please enter your name');
+            return;
+        }
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const question = questions[currentQuestionIndex];
+        document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        document.getElementById('question').innerText = question.text;
+        const options = document.getElementById('options');
+        options.innerHTML = '';
+        question.options.forEach((option, index) => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option';
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'option';
+            input.value = index;
+            const label = document.createElement('label');
+            label.innerText = option;
+            optionDiv.appendChild(input);
+            optionDiv.appendChild(label);
+            options.appendChild(optionDiv);
+        });
+        document.getElementById('nextButton').style.display = currentQuestionIndex < questions.length - 1 ? 'inline-block' : 'none';
+        document.getElementById('submitButton').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        if (selectedOption) {
+            checkAnswer(parseInt(selectedOption.value));
+            currentQuestionIndex++;
+            showQuestion();
+        } else {
+            alert('Please select an option');
+        }
+    }
+
+    function submitAnswer() {
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        if (selectedOption) {
+            checkAnswer(parseInt(selectedOption.value));
+            endQuiz();
+        } else {
+            alert('Please select an option');
+        }
+    }
+
+    function checkAnswer(selected) {
+        const question = questions[currentQuestionIndex];
+        if (selected === question.correct) {
+            score++;
+        }
+    }
+
+    function endQuiz() {
+        document.getElementById('quizScreen').style.display = 'none';
+        document.getElementById('resultScreen').style.display = 'block';
+        const resultText = `Game Over! Well done, ${playerName}! You scored ${score} out of ${questions.length}.`;
+        const suggestion = score < questions.length / 2 ? 'Keep practicing to improve your score!' : 'Great job!';
+        document.getElementById('result').innerText = `${resultText} ${suggestion}`;
+    }
+</script>
+</body>
+</html>

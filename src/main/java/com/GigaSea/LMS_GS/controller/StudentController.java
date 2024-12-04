@@ -12,38 +12,48 @@ import java.util.List;
 
 @Controller
 public class StudentController {
+
     @Autowired
     private StudentService studentService;
 
+    @GetMapping("/login")
+    public String login() {
+        return "login"; // HTML File for login
+    }
+
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "dashboard"; // HTML File
+        return "dashboard"; // HTML File for dashboard
     }
 
     @GetMapping("/teacherDashboard")
     public String teacherDashboard(Model model) {
         model.addAttribute("students", studentService.findStudents());
-        return "teacherDashboard"; // HTML File
+        return "teacherDashboard"; // HTML File for teacher dashboard
     }
 
     @GetMapping("/studentDashboard")
-    public String studentDashboard(@RequestParam(value = "studentId", required = false) Long studentId, Model model) {
-        if (studentId != null) {
-            Student student = studentService.getStudentId(studentId);
+    public String studentDashboard(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "name", required = false) String name, Model model) {
+        if (email != null && name != null) {
+            Student student = studentService.getStudentByEmailAndName(email, name);
             model.addAttribute("student", student);
         }
-        return "studentDashboard"; // HTML File
+        return "studentDashboard"; // HTML File for student dashboard
     }
 
     @GetMapping("/students")
     public String students(Model model) {
         model.addAttribute("students", studentService.findStudents());
-        return "students"; // HTML File
+        return "students"; // HTML File for student list
     }
 
     @PostMapping("/saveStudent")
     public String saveStudent(@ModelAttribute("student") Student student) {
-        studentService.saveStudent(student);
+        if (student.getId() != null) {
+            studentService.updateStudent(student.getId(), student);
+        } else {
+            studentService.saveStudent(student);
+        }
         return "redirect:/teacherDashboard";
     }
 
@@ -51,14 +61,14 @@ public class StudentController {
     public String registerStudent(Model model) {
         Student student = new Student();
         model.addAttribute("student", student);
-        return "registerStudent";
+        return "registerStudent"; // HTML File for registering student
     }
 
     @GetMapping("/updateStudent/{id}")
     public String updateStudent(Model model, @PathVariable Long id) {
         Student student = studentService.getStudentId(id);
         model.addAttribute("student", student);
-        return "updateFormStudent";
+        return "updateFormStudent"; // HTML File for updating student
     }
 
     @GetMapping("/deleteStudent/{id}")
@@ -71,7 +81,7 @@ public class StudentController {
     public String viewStudent(Model model, @PathVariable Long id) {
         Student student = studentService.getStudentId(id);
         model.addAttribute("student", student);
-        return "viewStudent";
+        return "viewStudent"; // HTML File for viewing student
     }
 
     @PostMapping("/updateAttendance/{id}")
@@ -86,11 +96,16 @@ public class StudentController {
     public String attendance(@RequestParam(value = "date", required = false) LocalDate date, Model model) {
         List<Student> students;
         if (date != null) {
-            students = studentService.findStudentsByDate(date);
+            students = studentService.findStudents();
         } else {
             students = studentService.findStudents();
         }
         model.addAttribute("students", students);
-        return "attendance";
+        return "attendance"; // HTML File for attendance
+    }
+
+    @GetMapping("/adminDashboard")
+    public String adminDashboard() {
+        return "adminDashboard"; // HTML File for admin dashboard
     }
 }

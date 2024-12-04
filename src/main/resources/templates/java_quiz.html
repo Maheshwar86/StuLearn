@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Quiz</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        animation: backgroundChange 10s infinite;
+    }
+    @keyframes backgroundChange {
+        0% { background-color: #f4f4f4; }
+        25% { background-color: #e6f7ff; }
+        50% { background-color: #d1e7ff; }
+        75% { background-color: #cceeff; }
+        100% { background-color: #f4f4f4; }
+    }
+    .container {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: fadeIn 2s ease-in-out;
+    }
+    #quizScreen, #resultScreen {
+        display: none;
+    }
+    .option {
+        display: block;
+        margin: 10px 0;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .option input[type="radio"] {
+        margin-right: 10px;
+    }
+    .option label {
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .option:hover label {
+        color: #007BFF;
+    }
+    .button {
+        padding: 10px 20px;
+        margin-top: 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+    #result {
+        font-size: 1.5em;
+        animation: fadeIn 2s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Java Quiz</h1>
+  <div id="startScreen">
+    <label for="name">Enter your name: </label>
+    <input type="text" id="name" required>
+    <button class="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div id="quizScreen">
+    <h2 id="questionNumber"></h2>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <button class="button" id="nextButton" onclick="nextQuestion()">Next</button>
+    <button class="button" id="submitButton" onclick="submitAnswer()">Submit</button>
+  </div>
+  <div id="resultScreen">
+    <h2 id="result"></h2>
+    <button class="button" onclick="location.reload()">Retry</button>
+  </div>
+</div>
+<script>
+  const questions = [
+      {text: 'What is the purpose of the Java Reflection API?', options: ['To manipulate data', 'To inspect and modify the runtime behavior of applications', 'To create graphics', 'To manage database connections'], correct: 1},
+      {text: 'Which of the following is not a feature of Java?', options: ['Platform Independent', 'Secure', 'Portable', 'Memory Management'], correct: 3},
+      {text: 'What is the use of the "volatile" keyword in Java?', options: ['To create a synchronized method', 'To ensure visibility of changes to variables across threads', 'To create a constant variable', 'To define a method'], correct: 1},
+      {text: 'What does the term "Serialization" refer to in Java?', options: ['Converting an object into a byte stream', 'Running multiple threads', 'Optimizing code performance', 'Testing an application'], correct: 0},
+      {text: 'What is the function of the Java Just-In-Time (JIT) compiler?', options: ['It converts bytecode into native machine code at runtime', 'It interprets Java code', 'It debugs Java applications', 'It compiles Java code into bytecode'], correct: 0},
+      {text: 'Which interface does java.util.HashMap implement?', options: ['Map', 'Collection', 'List', 'Set'], correct: 0},
+      {text: 'What does the term "Autoboxing" refer to in Java?', options: ['Automatically converting a primitive value into its corresponding wrapper type', 'Automatically creating a new object', 'Automatically managing memory', 'Automatically handling exceptions'], correct: 0},
+      {text: 'Which method of the Thread class is used to pause the execution of a thread for a specific period?', options: ['pause()', 'stop()', 'wait()', 'sleep()'], correct: 3},
+      {text: 'In Java, what is the result of "10 >> 2"?', options: ['2', '5', '10', '40'], correct: 0},
+      {text: 'What is the use of the "transient" keyword in Java?', options: ['To create a constant variable', 'To ensure variables are not serialized', 'To create synchronized methods', 'To handle exceptions'], correct: 1},
+      {text: 'What is the primary purpose of using the Java Executor framework?', options: ['To manage a pool of threads', 'To handle user input', 'To debug applications', 'To execute SQL queries'], correct: 0},
+      {text: 'What does the term "lambda expression" refer to in Java?', options: ['A short block of code that takes in parameters and returns a value', 'A method to create graphical elements', 'A mechanism to handle exceptions', 'A way to run multiple threads'], correct: 0},
+      {text: 'What is the Java Native Interface (JNI) used for?', options: ['To run Java applications', 'To call and interact with native applications and libraries written in other languages', 'To manage memory', 'To create user interfaces'], correct: 1},
+      {text: 'Which class in Java is used to read from a file?', options: ['FileReader', 'FileWriter', 'BufferedReader', 'FileInputStream'], correct: 0},
+      {text: 'In Java, which package contains the Collections framework?', options: ['java.lang', 'java.io', 'java.util', 'java.net'], correct: 2},
+      {text: 'What is the primary use of Java Servlets?', options: ['To create graphical user interfaces', 'To manage database connections', 'To handle HTTP requests and responses on a server', 'To manage thread pools'], correct: 2},
+      {text: 'What is the result of the expression "Math.max(5.5, 7.2)" in Java?', options: ['5.5', '7.2', '12.7', '5.55'], correct: 1},
+      {text: 'Which keyword is used in Java to inherit a class?', options: ['implement', 'inherit', 'extend', 'derive'], correct: 2},
+      {text: 'What does the term "heap" refer to in Java?', options: ['A memory space used for dynamic memory allocation', 'A method for sorting data', 'A type of collection', 'A loop structure'], correct: 0},
+      {text: 'Which method is used to compare two strings in Java for equality?', options: ['compare()', 'equals()', '==', 'compareTo()'], correct: 1},
+      {text: 'In Java, which class is used to handle file input and output operations?', options: ['FileReader', 'FileWriter', 'File', 'BufferedReader'], correct: 2},
+      {text: 'What does the "final" keyword denote when applied to a variable in Java?', options: ['The variable can be changed', 'The variable cannot be changed once initialized', 'The variable is global', 'The variable is static'], correct: 1},
+      {text: 'Which exception is thrown when a thread is waiting, sleeping, or otherwise occupied, and the thread is interrupted?', options: ['InterruptedException', 'IOException', 'SQLException', 'RuntimeException'], correct: 0},
+      {text: 'What does the "this" keyword refer to in Java?', options: ['The current object', 'The superclass', 'The class itself', 'A static method'], correct: 0},
+      {text: 'In Java, which method is used to terminate a running thread?', options: ['end()', 'terminate()', 'stop()', 'destroy()'], correct: 2},
+      {text: 'Which Java feature allows an interface to have methods with a body?', options: ['Abstract methods', 'Default methods', 'Static methods', 'Public methods'], correct: 1},
+      {text: 'What does the "super" keyword refer to in Java?', options: ['The current object', 'The subclass', 'The superclass', 'The interface'], correct: 2},
+      {text: 'Which method is used to read a line of text from the console in Java?', options: ['nextLine()', 'readLine()', 'input()', 'getline()'], correct: 1},
+      {text: 'What is the output of the following code: System.out.println(2 + 2 + "8"); in Java?', options: ['228', '48', '22', '4'], correct: 0},
+      {text: 'Which method in the Collections class is used to sort a list in Java?', options: ['sort()', 'order()', 'arrange()', 'sequence()'], correct: 0}
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let playerName = '';
+
+  function startQuiz() {
+      playerName = document.getElementById('name').value;
+      if (playerName === '') {
+          alert('Please enter your name');
+          return;
+      }
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'block';
+      showQuestion();
+  }
+
+  function showQuestion() {
+      const question = questions[currentQuestionIndex];
+      document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+      document.getElementById('question').innerText = question.text;
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+      question.options.forEach((option, index) => {
+          const optionDiv = document.createElement('div');
+          optionDiv.className = 'option';
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'option';
+          input.value = index;
+          const label = document.createElement('label');
+          label.innerText = option;
+          optionDiv.appendChild(input);
+          optionDiv.appendChild(label);
+          options.appendChild(optionDiv);
+      });
+      document.getElementById('nextButton').style.display = currentQuestionIndex < questions.length - 1 ? 'inline-block' : 'none';
+      document.getElementById('submitButton').style.display = 'inline-block';
+  }
+
+  function nextQuestion() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          currentQuestionIndex++;
+          showQuestion();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function submitAnswer() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          endQuiz();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function checkAnswer(selected) {
+      const question = questions[currentQuestionIndex];
+      if (selected === question.correct) {
+          score++;
+      }
+  }
+
+  function endQuiz() {
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'block';
+      const resultText = `Game Over! Well done, ${playerName}! You scored ${score} out of ${questions.length}.`;
+      const suggestion = score < questions.length / 2 ? 'Keep practicing to improve your score!' : 'Great job!';
+      document.getElementById('result').innerText = `${resultText} ${suggestion}`;
+  }
+</script>
+</body>
+</html>

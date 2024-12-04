@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            transition: background-color 0.5s ease;
+        }
+        body:hover {
+            background-color: #e6f7ff;
+        }
+        .login-container {
+            width: 300px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            cursor: pointer;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 10px;
+        }
+        .button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Login</h2>
+    <form th:action="@{/studentDashboard}" method="get">
+        <input type="email" name="email" class="input-field" placeholder="Student Email" required>
+        <input type="text" name="name" class="input-field" placeholder="Student Name" required>
+        <button type="submit" class="button">Login</button>
+    </form>
+</div>
+</body>
+</html>

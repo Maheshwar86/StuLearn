@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Quiz</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            transition: background-color 0.5s ease;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        input:focus, button:focus {
+            outline: none;
+            background-color: #e6f7ff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #quizScreen, #resultScreen {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Programming Quiz</h1>
+    <div id="startScreen">
+        <label for="name">Enter your name: </label>
+        <input type="text" id="name" required>
+        <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+    <div id="quizScreen">
+        <h2 id="questionNumber"></h2>
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <button id="submitButton" onclick="submitAnswer()">Submit Answer</button>
+    </div>
+    <div id="resultScreen">
+        <h2 id="result"></h2>
+        <button onclick="location.reload()">Restart Quiz</button>
+    </div>
+</div>
+<script>
+    const questions = [
+        {text: 'What is the output of 1 + 1 in Java?', options: ['1', '2', '3', '4'], correct: 1, topic: 'Java'},
+        {text: 'What is the default value of a boolean variable in Java?', options: ['true', 'false', 'null', '0'], correct: 1, topic: 'Java'},
+        {text: 'Which of the following is used for data visualization in Python?', options: ['Pandas', 'NumPy', 'Matplotlib', 'SciPy'], correct: 2, topic: 'Python'},
+         {text: 'Which of the following is a Python keyword?', options: ['if', 'elif', 'else', 'all of the above'], correct: 3, topic: 'Python'},
+        {text: 'How do you declare a constant in Java?', options: ['const', 'final', 'static', 'const final'], correct: 1, topic: 'Java'},
+        {text: 'Which data structure is implemented by using a hash table in Python?', options: ['List', 'Dictionary', 'Set', 'Tuple'], correct: 1, topic: 'Python'},
+        {text: 'What is the output of the following Java code: System.out.println(2 + "2")?', options: ['4', '22', '2 + 2', 'Error'], correct: 1, topic: 'Java'},
+        {text: 'Which method can be used to read an integer from the console in Python?', options: ['input()', 'int(input())', 'scan()', 'getint()'], correct: 1, topic: 'Python'},
+        {text: 'What does MVC stand for in web development?', options: ['Model View Control', 'Model View Component', 'Model View Controller', 'Model Vector Control'], correct: 2, topic: 'Full Stack'},
+        {text: 'In Java, which keyword is used to inherit a class?', options: ['implements', 'extends', 'inherits', 'super'], correct: 1, topic: 'Java'},
+        {text: 'What is the file extension for Python files?', options: ['.py', '.python', '.p', '.pt'], correct: 0, topic: 'Python'},
+        {text: 'What is the main advantage of using ReactJS in front-end development?', options: ['High performance', 'Reusable components', 'Easy integration', 'All of the above'], correct: 3, topic: 'Full Stack'},
+        {text: 'How do you start writing a comment in Java?', options: ['#', '//', '<!--', '/*'], correct: 1, topic: 'Java'},
+        {text: 'Which built-in function can be used to get the length of a list in Python?', options: ['len()', 'length()', 'count()', 'size()'], correct: 0, topic: 'Python'},
+        {text: 'Which language is used for styling web pages?', options: ['HTML', 'CSS', 'JavaScript', 'XML'], correct: 1, topic: 'Full Stack'},
+        {text: 'In Java, what is the default value of an int variable?', options: ['0', 'null', 'undefined', '1'], correct: 0, topic: 'Java'},
+        {text: 'What is the result of the expression 4 * 2 % 5 in Python?', options: ['1', '3', '2', '0'], correct: 0, topic: 'Python'},
+        {text: 'What does SQL stand for?', options: ['Structured Query Language', 'Simple Query Language', 'Structured Question Language', 'Standard Query Language'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which of the following is not a Java access modifier?', options: ['public', 'private', 'protected', 'package'], correct: 3, topic: 'Java'},
+        {text: 'Which module in Python is used for generating random numbers?', options: ['random', 'rand', 'numbers', 'randint'], correct: 0, topic: 'Python'},
+        {text: 'What is a state in ReactJS?', options: ['A permanent storage', 'An internal data storage of a component', 'A component\'s method', 'None of the above'], correct: 1, topic: 'Full Stack'},
+        {text: 'Which statement is used to catch exceptions in Java?', options: ['try', 'catch', 'throw', 'handle'], correct: 1, topic: 'Java'},
+        {text: 'How do you create a tuple in Python?', options: ['[]', '{}', '()', '<>'], correct: 2, topic: 'Python'},
+        {text: 'What is the primary use of Node.js?', options: ['Front-end development', 'Back-end development', 'Database management', 'Machine learning'], correct: 1, topic: 'Full Stack'},
+        {text: 'Which method is called when an object is created in Java?', options: ['finalize()', 'constructor()', 'destructor()', 'create()'], correct: 1, topic: 'Java'},
+        {text: 'How do you create a dictionary in Python?', options: ['[]', '()', '{}', '<>'], correct: 2, topic: 'Python'},
+        {text: 'What does REST stand for in web services?', options: ['Representational State Transfer', 'Representational Structure Transfer', 'Repeated State Transfer', 'Repeated Structure Transfer'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which keyword is used to define a class in Java?', options: ['class', 'Class', 'create', 'object'], correct: 0, topic: 'Java'},
+        {text: 'What does the // operator do in Python?', options: ['Integer division', 'Floating point division', 'Modulus', 'Exponentiation'], correct: 0, topic: 'Python'},
+        {text: 'What is the main purpose of using AngularJS?', options: ['Creating databases', 'Developing back-end services', 'Building dynamic web applications', 'None of the above'], correct: 2, topic: 'Full Stack'},
+        {text: 'Which loop structure is supported by Java?', options: ['for', 'while', 'do-while', 'all of the above'], correct: 3, topic: 'Java'},
+        {text: 'Which function is used to iterate over a sequence in Python?', options: ['walk()', 'iter()', 'range()', 'list()'], correct: 2, topic: 'Python'},
+        {text: 'What is the primary function of MongoDB in full stack development?', options: ['Database management', 'Front-end styling', 'Network management', 'Server scripting'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which keyword in Java is used to return a value from a method?', options: ['return', 'yield', 'output', 'giveback'], correct: 0, topic: 'Java'},
+        {text: 'How do you import a module in Python?', options: ['import', 'include', 'using', 'require'], correct: 0, topic: 'Python'},
+        {text: 'What is the primary purpose of Express.js in a Node.js environment?', options: ['Handling HTTP requests', 'Front-end development', 'Database connectivity', 'Machine learning'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which package is used for working with databases in Java?', options: ['java.sql', 'java.net', 'java.util', 'java.db'], correct: 0, topic: 'Java'},
+        {text: 'Which of the following is a built-in data type in Python?', options: ['array', 'list', 'stack', 'queue'], correct: 1, topic: 'Python'},
+        {text: 'What is the main benefit of using Docker in full stack development?', options: ['Version control', 'Continuous integration', 'Containerization', 'Load balancing'], correct: 2, topic: 'Full Stack'},
+                    {text: 'What is the output of the following code in Java? System.out.println("Hello" + 5);', options: ['Hello', 'Hello5', 'Error', '5Hello'], correct: 1, topic: 'Java'},
+        {text: 'How do you comment out a block of code in Python?', options: ['/*...*/', '//...', '#...', '"""..."""'], correct: 3, topic: 'Python'},
+        {text: 'What does JSON stand for?', options: ['JavaScript Object Notation', 'Java Syntax Object Notation', 'JavaScript Oriented Notation', 'Java Oriented Syntax Notation'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which method is used to clone an object in Java?', options: ['copy()', 'clone()', 'replicate()', 'duplicate()'], correct: 1, topic: 'Java'},
+        {text: 'How do you create a new list from an existing list in Python?', options: ['list()', 'copy()', 'new()', 'clone()'], correct: 1, topic: 'Python'},
+        {text: 'What is the main purpose of using Bootstrap in web development?', options: ['Creating databases', 'Building server-side logic', 'Building responsive web pages', 'Developing algorithms'], correct: 2, topic: 'Full Stack'},
+        {text: 'Which keyword is used to handle errors in Java?', options: ['try', 'catch', 'throw', 'handle'], correct: 1, topic: 'Java'},
+        {text: 'Which of the following is used for asynchronous programming in Python?', options: ['threads', 'asyncio', 'multiprocessing', 'subprocess'], correct: 1, topic: 'Python'},
+        {text: 'What does SPA stand for in web development?', options: ['Single Page Application', 'Simple Page Application', 'Single Point Application', 'Single Page Assembly'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which of the following is a valid constructor in Java?', options: ['MyClass()', 'public MyClass()', 'class MyClass()', 'new MyClass()'], correct: 1, topic: 'Java'},
+        {text: 'Which of the following is a mutable data type in Python?', options: ['tuple', 'list', 'string', 'int'], correct: 1, topic: 'Python'},
+        {text: 'What is the primary purpose of using Node.js in web development?', options: ['Client-side scripting', 'Server-side scripting', 'Database management', 'Web page styling'], correct: 1, topic: 'Full Stack'},
+        {text: 'What is the output of the following code in Java? System.out.println("Hello" + null);', options: ['Hello', 'Hellonull', 'null', 'Error'], correct: 3, topic: 'Java'},
+        {text: 'Which library is used for data manipulation in Python?', options: ['NumPy', 'Pandas', 'Matplotlib', 'SciPy'], correct: 1, topic: 'Python'},
+        {text: 'What does CDN stand for in web development?', options: ['Content Delivery Network', 'Content Distribution Node', 'Cache Delivery Network', 'Client Development Network'], correct: 0, topic: 'Full Stack'},
+        {text: 'Which of the following is a front-end framework?', options: ['Django', 'Spring', 'React', 'Flask'], correct: 2, topic: 'Full Stack'}
+
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let playerName = '';
+
+    function startQuiz() {
+        playerName = document.getElementById('name').value;
+        if (playerName === '') {
+            alert('Please enter your name');
+            return;
+        }
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'block';
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const question = questions[currentQuestionIndex];
+        document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        document.getElementById('question').innerText = question.text;
+        const options = document.getElementById('options');
+        options.innerHTML = '';
+        question.options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.innerText = option;
+            button.onclick = () => checkAnswer(index);
+            options.appendChild(button);
+        });
+    }
+
+    function checkAnswer(selected) {
+        const question = questions[currentQuestionIndex];
+        if (selected === question.correct) {
+            score++;
+        }
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion();
+        } else {
+            endQuiz();
+        }
+    }
+
+    function submitAnswer() {
+        checkAnswer();
+    }
+
+    function endQuiz() {
+        document.getElementById('quizScreen').style.display = 'none';
+        document.getElementById('resultScreen').style.display = 'block';
+        document.getElementById('result').innerText = `Well done, ${playerName}! Your score is ${score} out of ${questions.length}.`;
+    }
+</script>
+</body>
+</html>

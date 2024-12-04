@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C Language Quiz</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        animation: backgroundChange 10s infinite;
+    }
+    @keyframes backgroundChange {
+        0% { background-color: #f4f4f4; }
+        25% { background-color: #e6f7ff; }
+        50% { background-color: #d1e7ff; }
+        75% { background-color: #cceeff; }
+        100% { background-color: #f4f4f4; }
+    }
+    .container {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: fadeIn 2s ease-in-out;
+    }
+    #quizScreen, #resultScreen {
+        display: none;
+    }
+    .option {
+        display: block;
+        margin: 10px 0;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .option input[type="radio"] {
+        margin-right: 10px;
+    }
+    .option label {
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .option:hover label {
+        color: #007BFF;
+    }
+    .button {
+        padding: 10px 20px;
+        margin-top: 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+    #result {
+        font-size: 1.5em;
+        animation: fadeIn 2s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>C Language Quiz</h1>
+  <div id="startScreen">
+    <label for="name">Enter your name: </label>
+    <input type="text" id="name" required>
+    <button class="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div id="quizScreen">
+    <h2 id="questionNumber"></h2>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <button class="button" id="nextButton" onclick="nextQuestion()">Next</button>
+    <button class="button" id="submitButton" onclick="submitAnswer()">Submit</button>
+  </div>
+  <div id="resultScreen">
+    <h2 id="result"></h2>
+    <button class="button" onclick="location.reload()">Restart Quiz</button>
+  </div>
+</div>
+<script>
+  const questions = [
+      {text: 'Which of the following is used to declare a constant in C?', options: ['const', '#define', 'constant', 'None of the above'], correct: 1},
+      {text: 'What is the output of printf("%d", (3 + 2) / 2); in C?', options: ['2.5', '2', '3', '0'], correct: 1},
+      {text: 'Which of the following is the correct syntax to declare a pointer in C?', options: ['int *ptr;', 'int ptr;', 'int &ptr;', 'int ptr[];'], correct: 0},
+{text: 'What is the output of printf("%d", sizeof(float));?', options: ['2', '4', '8', '16'], correct: 1},
+{text: 'Which of the following correctly initializes a character array in C?', options: ['char arr[] = "Hello";', 'char arr[] = {"Hello"};', 'char arr[] = (Hello);', 'char arr[] = [Hello];'], correct: 0},
+{text: 'Which of the following is not a valid storage class in C?', options: ['auto', 'static', 'register', 'volatile'], correct: 3},
+{text: 'What is the use of the "sizeof" operator in C?', options: ['To determine the size of a data type or variable', 'To resize an array', 'To allocate memory', 'To return the length of a string'], correct: 0},
+{text: 'Which of the following functions is used to dynamically allocate memory in C?', options: ['malloc()', 'alloc()', 'new()', 'calloc()'], correct: 0},
+{text: 'What does the "void" keyword indicate in a function declaration?', options: ['The function returns no value', 'The function takes no parameters', 'The function is private', 'The function is static'], correct: 0},
+{text: 'What is the output of printf("%d", 10 + 20);?', options: ['10', '20', '30', '1020'], correct: 2},
+{text: 'Which of the following is a loop construct in C?', options: ['for', 'while', 'do-while', 'All of the above'], correct: 3},
+{text: 'Which header file is required for using printf() and scanf() functions in C?', options: ['<stdio.h>', '<stdlib.h>', '<string.h>', '<conio.h>'], correct: 0},
+{text: 'What is the output of the following code: int a = 5; if(a > 0) { printf("Positive"); } else { printf("Negative"); }', options: ['Positive', 'Negative', 'Error', 'None of the above'], correct: 0},
+{text: 'What is the purpose of the "break" statement in C?', options: ['To exit a loop or switch statement', 'To skip the current iteration of a loop', 'To end the program', 'To continue the next iteration of a loop'], correct: 0},
+{text: 'Which of the following is used to define a macro in C?', options: ['#macro', '#define', '#ifdef', '#include'], correct: 1},
+{text: 'What is the output of the following code: printf("%d", 9 % 2);', options: ['1', '2', '4', '0'], correct: 0},
+{text: 'Which function is used to compare two strings in C?', options: ['strcmp()', 'strcpy()', 'strcat()', 'strlen()'], correct: 0},
+{text: 'Which of the following is a valid array declaration in C?', options: ['int arr[5];', 'int arr[];', 'int arr[5] = {1, 2, 3, 4, 5};', 'All of the above'], correct: 3},
+{text: 'What does the "continue" statement do in a loop?', options: ['Exits the loop', 'Skips the current iteration and continues with the next iteration', 'Ends the program', 'Returns a value'], correct: 1},
+{text: 'What is the output of printf("%d", (int)3.9);?', options: ['3', '4', '3.9', 'Error'], correct: 0},
+{text: 'Which of the following is used to define a union in C?', options: ['struct', 'union', 'typedef', 'enum'], correct: 1},
+{text: 'Which of the following operators is used to access a structure member in C?', options: ['.', '->', '*', '&'], correct: 1},
+{text: 'What is the correct syntax to declare a function in C?', options: ['returnType functionName(parameters);', 'functionName(parameters) returnType;', 'returnType functionName;', 'functionName(parameters);'], correct: 0},
+{text: 'What is the output of the following code: for(int i = 0; i < 3; i++) { printf("%d", i); }', options: ['012', '123', '001', '0123'], correct: 0},
+{text: 'Which of the following is a bitwise operator in C?', options: ['&', '|', '^', 'All of the above'], correct: 3},
+{text: 'What is the purpose of the "typedef" keyword in C?', options: ['To define a new data type', 'To create an alias name for a data type', 'To define a constant', 'To include a library'], correct: 1},
+{text: 'Which function is used to copy a string in C?', options: ['strcpy()', 'strcat()', 'strcmp()', 'strlen()'], correct: 0},
+{text: 'What is the output of the following code: int x = 5; x++; printf("%d", x);', options: ['5', '6', '7', '4'], correct: 1},
+{text: 'What is the correct syntax to include a header file in C?', options: ['#include <header.h>', '#include "header.h"', '#include <header>', 'Both a and b'], correct: 3},
+{text: 'Which of the following is a correct statement to declare a variable in C?', options: ['int a;', 'float a;', 'char a;', 'All of the above'], correct: 3},
+      {text: 'Which function is used to read a formatted input in C?', options: ['scanf()', 'printf()', 'gets()', 'puts()'], correct: 0}
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let playerName = '';
+
+  function startQuiz() {
+      playerName = document.getElementById('name').value;
+      if (playerName === '') {
+          alert('Please enter your name');
+          return;
+      }
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'block';
+      showQuestion();
+  }
+
+  function showQuestion() {
+      const question = questions[currentQuestionIndex];
+      document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+      document.getElementById('question').innerText = question.text;
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+      question.options.forEach((option, index) => {
+          const optionDiv = document.createElement('div');
+          optionDiv.className = 'option';
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'option';
+          input.value = index;
+          const label = document.createElement('label');
+          label.innerText = option;
+          optionDiv.appendChild(input);
+          optionDiv.appendChild(label);
+          options.appendChild(optionDiv);
+      });
+      document.getElementById('nextButton').style.display = currentQuestionIndex < questions.length - 1 ? 'inline-block' : 'none';
+      document.getElementById('submitButton').style.display = 'inline-block';
+  }
+
+  function nextQuestion() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          currentQuestionIndex++;
+          showQuestion();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function submitAnswer() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          endQuiz();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function checkAnswer(selected) {
+      const question = questions[currentQuestionIndex];
+      if (selected === question.correct) {
+          score++;
+      }
+  }
+
+  function endQuiz() {
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'block';
+      const resultText = `Game Over! Well done, ${playerName}! You scored ${score} out of ${questions.length}.`;
+      const suggestion = score < questions.length / 2 ? 'Keep practicing to improve your score!' : 'Great job!';
+      document.getElementById('result').innerText = `${resultText} ${suggestion}`;
+  }
+</script>
+</body>
+</html>

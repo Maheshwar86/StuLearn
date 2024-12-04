@@ -13,6 +13,7 @@ public class Student {
     private Long id;
     private String name;
     private String email;
+    private String attendance;
     private int age;
     private String gender;
     private String course;
@@ -21,9 +22,8 @@ public class Student {
     private String village;
     private String bloodGroup;
     private String description;
-    private String attendance;
-    private LocalDate dateOfBirth; // New field for date of birth
-    private String phoneNumber; // New field for phone number
+    private LocalDate dateOfBirth;
+    private String phoneNumber;
 
     // Getters and Setters
     public Long getId() {
@@ -48,6 +48,14 @@ public class Student {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(String attendance) {
+        this.attendance = attendance;
     }
 
     public int getAge() {
@@ -112,14 +120,6 @@ public class Student {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getAttendance() {
-        return attendance;
-    }
-
-    public void setAttendance(String attendance) {
-        this.attendance = attendance;
     }
 
     public LocalDate getDateOfBirth() {

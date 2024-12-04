@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced HTML Quiz</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        animation: backgroundChange 10s infinite;
+    }
+    @keyframes backgroundChange {
+        0% { background-color: #f4f4f4; }
+        25% { background-color: #e6f7ff; }
+        50% { background-color: #d1e7ff; }
+        75% { background-color: #cceeff; }
+        100% { background-color: #f4f4f4; }
+    }
+    .container {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: fadeIn 2s ease-in-out;
+    }
+    #quizScreen, #resultScreen {
+        display: none;
+    }
+    .option {
+        display: block;
+        margin: 10px 0;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .option input[type="radio"] {
+        margin-right: 10px;
+    }
+    .option label {
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .option:hover label {
+        color: #007BFF;
+    }
+    .button {
+        padding: 10px 20px;
+        margin-top: 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+    #result {
+        font-size: 1.5em;
+        animation: fadeIn 2s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Advanced HTML Quiz</h1>
+  <div id="startScreen">
+    <label for="name">Enter your name: </label>
+    <input type="text" id="name" required>
+    <button class="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div id="quizScreen">
+    <h2 id="questionNumber"></h2>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <button class="button" id="nextButton" onclick="nextQuestion()">Next</button>
+    <button class="button" id="submitButton" onclick="submitAnswer()">Submit</button>
+  </div>
+  <div id="resultScreen">
+    <h2 id="result"></h2>
+    <button class="button" onclick="location.reload()">Retry</button>
+  </div>
+</div>
+<script>
+  const questions = [
+      {text: 'What does the HTML5 <!DOCTYPE> declaration do?', options: ['Defines the document type', 'Specifies a CSS file', 'Links a JavaScript file', 'None of the above'], correct: 0},
+      {text: 'What is the purpose of the <meta> tag in HTML?', options: ['To link to a CSS file', 'To link to a JavaScript file', 'To provide metadata about the HTML document', 'To create a form'], correct: 2},
+      {text: 'What is the <canvas> element used for in HTML5?', options: ['To display images', 'To draw graphics on the fly', 'To play audio files', 'To create forms'], correct: 1},
+      {text: 'Which of the following is the correct syntax for an HTML comment?', options: ['<!-- Comment -->', '// Comment', '/* Comment */', '# Comment'], correct: 0},
+      {text: 'What is the purpose of the <aside> tag in HTML5?', options: ['To define content aside from the main content', 'To create a link', 'To embed a video', 'To add a caption to an image'], correct: 0},
+      {text: 'Which HTML tag is used to define an internal style sheet?', options: ['<style>', '<script>', '<link>', '<css>'], correct: 0},
+      {text: 'What does the <header> element in HTML represent?', options: ['The top of the page', 'Introduction or navigational aids', 'A section of the document', 'The footer of the page'], correct: 1},
+      {text: 'What is the correct HTML element for playing video files?', options: ['<movie>', '<video>', '<media>', '<play>'], correct: 1},
+      {text: 'How can you make a numbered list in HTML?', options: ['<ul>', '<ol>', '<list>', '<dl>'], correct: 1},
+      {text: 'Which attribute is used to define a unique identifier for an HTML element?', options: ['id', 'class', 'name', 'value'], correct: 0},
+      {text: 'What is the correct HTML for inserting an image?', options: ['<image src="image.jpg">', '<img href="image.jpg">', '<img src="image.jpg">', '<img link="image.jpg">'], correct: 2},
+      {text: 'What does the <mark> tag do?', options: ['Highlights text', 'Inserts a line break', 'Marks an item in a list', 'Creates a checkbox'], correct: 0},
+      {text: 'Which HTML element is used to specify a footer for a document or section?', options: ['<footer>', '<bottom>', '<section>', '<foot>'], correct: 0},
+      {text: 'What is the correct way to create a hyperlink in HTML?', options: ['<a href="http://example.com">Example</a>', '<link href="http://example.com">Example</link>', '<a url="http://example.com">Example</a>', '<a>Example</a>'], correct: 0},
+      {text: 'What is the purpose of the <nav> element in HTML5?', options: ['To define a navigation section', 'To create a hyperlink', 'To embed a video', 'To include JavaScript'], correct: 0},
+      {text: 'Which HTML element is used to define an unordered list?', options: ['<ul>', '<ol>', '<li>', '<dl>'], correct: 0},
+      {text: 'Which tag is used to define a table in HTML?', options: ['<table>', '<tab>', '<tr>', '<td>'], correct: 0},
+      {text: 'How can you make a text bold in HTML?', options: ['<b>', '<bold>', '<strong>', 'Both <b> and <strong>'], correct: 3},
+      {text: 'What is the correct HTML tag for inserting a line break?', options: ['<break>', '<lb>', '<br>', '<line>'], correct: 2},
+      {text: 'What is the purpose of the <article> element in HTML5?', options: ['To define independent, self-contained content', 'To create a hyperlink', 'To embed a video', 'To add a caption to an image'], correct: 0},
+      {text: 'Which attribute specifies an alternate text for an image, if the image cannot be displayed?', options: ['alt', 'src', 'title', 'href'], correct: 0},
+      {text: 'What does the <em> tag do in HTML?', options: ['Emphasizes text', 'Makes text italic', 'Makes text bold', 'Both emphasizes and makes text italic'], correct: 3},
+      {text: 'Which HTML element is used to specify a list item?', options: ['<item>', '<li>', '<ul>', '<ol>'], correct: 1},
+      {text: 'What is the correct HTML element for inserting a horizontal rule?', options: ['<hr>', '<line>', '<br>', '<rule>'], correct: 0},
+      {text: 'What does the <code> tag do in HTML?', options: ['Defines a piece of computer code', 'Defines a command button', 'Defines a variable', 'Defines a keyboard input'], correct: 0},
+      {text: 'Which HTML tag is used to define a description list?', options: ['<dl>', '<ol>', '<ul>', '<list>'], correct: 0},
+      {text: 'What is the purpose of the <time> element in HTML5?', options: ['To display the current time', 'To encode a date and time', 'To run a timer', 'To schedule an event'], correct: 1},
+      {text: 'Which attribute specifies the source URL of an image in HTML?', options: ['src', 'alt', 'href', 'link'], correct: 0},
+      {text: 'How can you create a checkbox in HTML?', options: ['<checkbox>', '<input type="check">', '<input type="checkbox">', '<check>'], correct: 2},
+      {text: 'Which HTML attribute is used to define inline styles?', options: ['style', 'styles', 'class', 'css'], correct: 0}
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let playerName = '';
+
+  function startQuiz() {
+      playerName = document.getElementById('name').value;
+      if (playerName === '') {
+          alert('Please enter your name');
+          return;
+      }
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'block';
+      showQuestion();
+  }
+
+  function showQuestion() {
+      const question = questions[currentQuestionIndex];
+      document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+      document.getElementById('question').innerText = question.text;
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+      question.options.forEach((option, index) => {
+          const optionDiv = document.createElement('div');
+          optionDiv.className = 'option';
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'option';
+          input.value = index;
+          const label = document.createElement('label');
+          label.innerText = option;
+          optionDiv.appendChild(input);
+          optionDiv.appendChild(label);
+          options.appendChild(optionDiv);
+      });
+      document.getElementById('nextButton').style.display = currentQuestionIndex < questions.length - 1 ? 'inline-block' : 'none';
+      document.getElementById('submitButton').style.display = 'inline-block';
+  }
+
+  function nextQuestion() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          currentQuestionIndex++;
+          showQuestion();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function submitAnswer() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          endQuiz();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function checkAnswer(selected) {
+      const question = questions[currentQuestionIndex];
+      if (selected === question.correct) {
+          score++;
+      }
+  }
+
+  function endQuiz() {
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'block';
+      const resultText = `Game Over! Well done, ${playerName}! You scored ${score} out of ${questions.length}.`;
+      const suggestion = score < questions.length / 2 ? 'Keep practicing to improve your score!' : 'Great job!';
+      document.getElementById('result').innerText = `${resultText} ${suggestion}`;
+  }
+</script>
+</body>
+</html>

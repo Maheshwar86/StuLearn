@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Quiz</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        animation: backgroundChange 10s infinite;
+    }
+    @keyframes backgroundChange {
+        0% { background-color: #f4f4f4; }
+        25% { background-color: #e6f7ff; }
+        50% { background-color: #d1e7ff; }
+        75% { background-color: #cceeff; }
+        100% { background-color: #f4f4f4; }
+    }
+    .container {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        animation: fadeIn 2s ease-in-out;
+    }
+    #quizScreen, #resultScreen {
+        display: none;
+    }
+    .option {
+        display: block;
+        margin: 10px 0;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .option input[type="radio"] {
+        margin-right: 10px;
+    }
+    .option label {
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .option:hover label {
+        color: #007BFF;
+    }
+    .button {
+        padding: 10px 20px;
+        margin-top: 20px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+    #result {
+        font-size: 1.5em;
+        animation: fadeIn 2s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>JavaScript Quiz</h1>
+  <div id="startScreen">
+    <label for="name">Enter your name: </label>
+    <input type="text" id="name" required>
+    <button class="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div id="quizScreen">
+    <h2 id="questionNumber"></h2>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <button class="button" id="nextButton" onclick="nextQuestion()">Next</button>
+    <button class="button" id="submitButton" onclick="submitAnswer()">Submit</button>
+  </div>
+  <div id="resultScreen">
+    <h2 id="result"></h2>
+    <button class="button" onclick="location.reload()">Restart Quiz</button>
+  </div>
+</div>
+<script>
+  const questions = [
+      {text: 'Which company developed JavaScript?', options: ['Microsoft', 'Netscape', 'Sun Microsystems', 'IBM'], correct: 1},
+      {text: 'What does "DOM" stand for in JavaScript?', options: ['Document Object Model', 'Display Object Management', 'Digital Object Model', 'Desktop Object Model'], correct: 0},
+      {text: 'Which of the following is not a reserved word in JavaScript?', options: ['interface', 'throws', 'program', 'short'], correct: 2},
+{text: 'What is the correct syntax for referring to an external script called "app.js"?', options: ['<script href="app.js">', '<script name="app.js">', '<script src="app.js">', '<script file="app.js">'], correct: 2},
+{text: 'How do you write "Hello World" in an alert box?', options: ['alertBox("Hello World");', 'msg("Hello World");', 'alert("Hello World");', 'msgBox("Hello World");'], correct: 2},
+{text: 'How do you create a function in JavaScript?', options: ['function myFunction()', 'function:myFunction()', 'function = myFunction()', 'function => myFunction()'], correct: 0},
+{text: 'How do you call a function named "myFunction"?', options: ['call myFunction()', 'call function myFunction()', 'myFunction()', 'call myFunction'], correct: 2},
+{text: 'How do you write an IF statement in JavaScript?', options: ['if i = 5 then', 'if (i == 5)', 'if i == 5 then', 'if i = 5'], correct: 1},
+{text: 'How do you write an IF statement for executing some code if "i" is NOT equal to 5?', options: ['if (i <> 5)', 'if i <> 5', 'if (i != 5)', 'if i =! 5 then'], correct: 2},
+{text: 'How does a FOR loop start?', options: ['for (i = 0; i <= 5; i++)', 'for i = 1 to 5', 'for (i <= 5; i++)', 'for (i = 0; i <= 5)'], correct: 0},
+{text: 'How can you add a comment in a JavaScript?', options: ['<!--This is a comment-->', '//This is a comment', '/*This is a comment*/', '**This is a comment'], correct: 1},
+{text: 'What is the correct way to write a JavaScript array?', options: ['var colors = "red", "green", "blue"', 'var colors = (1:"red", 2:"green", 3:"blue")', 'var colors = ["red", "green", "blue"]', 'var colors = 1 = ("red"), 2 = ("green"), 3 = ("blue")'], correct: 2},
+{text: 'How do you round the number 7.25, to the nearest integer?', options: ['Math.rnd(7.25)', 'Math.round(7.25)', 'rnd(7.25)', 'round(7.25)'], correct: 1},
+{text: 'How do you find the number with the highest value of x and y?', options: ['ceil(x, y)', 'top(x, y)', 'Math.max(x, y)', 'Math.ceil(x, y)'], correct: 2},
+{text: 'What is the correct JavaScript syntax for opening a new window called "w2" ?', options: ['w2 = window.new("http://www.example.com");', 'w2 = window.open("http://www.example.com");', 'w2 = window.create("http://www.example.com");', 'w2 = window.newTab("http://www.example.com");'], correct: 1},
+{text: 'JavaScript is the same as Java.', options: ['True', 'False'], correct: 1},
+{text: 'How can you detect the client’s browser name?', options: ['navigator.appName', 'browser.name', 'client.navName', 'browser.appName'], correct: 0},
+{text: 'Which event occurs when the user clicks on an HTML element?', options: ['onchange', 'onclick', 'onmouseclick', 'onmouseover'], correct: 1},
+{text: 'How do you declare a JavaScript variable?', options: ['var carName;', 'v carName;', 'variable carName;', 'declare carName;'], correct: 0},
+{text: 'Which operator is used to assign a value to a variable?', options: [':', '=', '-', '*'], correct: 1},
+{text: 'What will the following code return: Boolean(10 > 9)?', options: ['NaN', 'false', 'true', 'undefined'], correct: 2},
+{text: 'Is JavaScript case-sensitive?', options: ['No', 'Yes'], correct: 1},
+{text: 'How to write an IF statement in JavaScript that executes some code if "i" is equal to 5?', options: ['if i == 5 then', 'if i = 5', 'if (i == 5)', 'if i = 5 then'], correct: 2},
+{text: 'How does a WHILE loop start?', options: ['while (i <= 10; i++)', 'while (i <= 10)', 'while i = 1 to 10', 'while (i++ <= 10)'], correct: 1},
+      {text: 'Which of the following is not a valid JavaScript variable name?', options: ['2names', '_first_and_last_names', 'FirstAndLast', 'None of the above'], correct: 0}
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let playerName = '';
+
+  function startQuiz() {
+      playerName = document.getElementById('name').value;
+      if (playerName === '') {
+          alert('Please enter your name');
+          return;
+      }
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('quizScreen').style.display = 'block';
+      showQuestion();
+  }
+
+  function showQuestion() {
+      const question = questions[currentQuestionIndex];
+      document.getElementById('questionNumber').innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+      document.getElementById('question').innerText = question.text;
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+      question.options.forEach((option, index) => {
+          const optionDiv = document.createElement('div');
+          optionDiv.className = 'option';
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'option';
+          input.value = index;
+          const label = document.createElement('label');
+          label.innerText = option;
+          optionDiv.appendChild(input);
+          optionDiv.appendChild(label);
+          options.appendChild(optionDiv);
+      });
+      document.getElementById('nextButton').style.display = currentQuestionIndex < questions.length - 1 ? 'inline-block' : 'none';
+      document.getElementById('submitButton').style.display = 'inline-block';
+  }
+
+  function nextQuestion() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          currentQuestionIndex++;
+          showQuestion();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function submitAnswer() {
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+      if (selectedOption) {
+          checkAnswer(parseInt(selectedOption.value));
+          endQuiz();
+      } else {
+          alert('Please select an option');
+      }
+  }
+
+  function checkAnswer(selected) {
+      const question = questions[currentQuestionIndex];
+      if (selected === question.correct) {
+          score++;
+      }
+  }
+
+  function endQuiz() {
+      document.getElementById('quizScreen').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'block';
+      const resultText = `Game Over! Well done, ${playerName}! You scored ${score} out of ${questions.length}.`;
+      const suggestion = score < questions.length / 2 ? 'Keep practicing to improve your score!' : 'Great job!';
+      document.getElementById('result').innerText = `${resultText} ${suggestion}`;
+  }
+</script>
+</body>
+</html>

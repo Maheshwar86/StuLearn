@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Teachers</title>
+  <style>
+    body {
+      background: linear-gradient(to right, lightviolet, pink);
+      animation: gradient 10s infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
+
+    @keyframes gradient {
+      0% { background-color: lightviolet; }
+      50% { background-color: pink; }
+      100% { background-color: lightviolet; }
+    }
+
+    table {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .back-button:hover {
+      background-color: #FF69B4;
+    }
+  </style>
+</head>
+<body>
+<h1>View Teachers</h1>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Subject</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="teacher : ${teachers}">
+    <td th:text="${teacher.id}">1</td>
+    <td th:text="${teacher.name}">John Doe</td>
+    <td th:text="${teacher.subject}">Mathematics</td>
+  </tr>
+  </tbody>
+</table>
+<button class="back-button" onclick="location.href='/adminDashboard'">Back to Dashboard</button>
+</body>
+</html>

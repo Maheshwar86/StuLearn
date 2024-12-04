@@ -15,6 +15,7 @@
     table {
         width: 100%;
         border-collapse: collapse;
+        animation: fadeIn 1s ease-in-out;
     }
     table, th, td {
         border: 1px solid black;
@@ -22,16 +23,39 @@
     th, td {
         padding: 15px;
         text-align: left;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    th:hover, td:hover {
+        background-color: #d1e7ff;
+        transform: scale(1.05);
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    .exam-button, .dashboard-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .exam-button img, .dashboard-button img {
+        margin-right: 10px;
     }
   </style>
 </head>
 <body>
 <h1>Student Dashboard</h1>
-<form th:action="@{/studentDashboard}" method="get">
-  <label for="studentId">Enter Student ID:</label>
-  <input type="text" id="studentId" name="studentId" required>
-  <button type="submit">Submit</button>
-</form>
 <div th:if="${student != null}">
   <h2>Student Details</h2>
   <table>
@@ -40,14 +64,64 @@
       <th>Name</th>
       <th>Email</th>
       <th>Attendance</th>
+      <th>Course</th>
     </tr>
     <tr>
       <td th:text="${student.id}"></td>
       <td th:text="${student.name}"></td>
       <td th:text="${student.email}"></td>
       <td th:text="${student.attendance}"></td>
+      <td th:text="${student.course}"></td>
     </tr>
   </table>
 </div>
+<button class="exam-button" onclick="setExam()">
+  <img src="https://res.cloudinary.com/duhki4wze/image/upload/v1731994425/ckuenkpigwfdh9rcj2uh.jpg" alt="Set Exam Icon" width="20" height="20">
+  Set Exam
+</button>
+<button class="dashboard-button" onclick="goToDashboard()">
+  <img src="https://res.cloudinary.com/duhki4wze/image/upload/v1731994390/wxuknseakhmijsbkf08h.png" alt="Dashboard Icon" width="20" height="20">
+  Go to Dashboard
+</button>
+
+<script>
+  function setExam() {
+    const course = /*[[${student.course}]]*/ '[[${student.course}]]'; // Correct Thymeleaf variable injection
+    let url = '';
+
+    switch (course) {
+      case 'Java':
+        url = '/java_quiz';
+        break;
+      case 'HTML':
+        url = '/html_quiz';
+        break;
+      case 'C++':
+        url = '/cpp_quiz';
+        break;
+      case 'Python':
+        url = '/python_quiz';
+        break;
+      case 'JavaScript':
+        url = '/javascript_quiz';
+        break;
+      case 'Full Stack':
+        url = '/fullstack_quiz';
+        break;
+      case 'C':
+        url = '/c_quiz';
+        break;
+      default:
+        alert('Course not recognized');
+        return;
+    }
+
+    window.location.href = url;
+  }
+
+  function goToDashboard() {
+    window.location.href = '/dashboard'; // Adjust the URL to match your dashboard route
+  }
+</script>
 </body>
 </html>

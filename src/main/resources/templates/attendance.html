@@ -15,6 +15,10 @@
     table {
         width: 100%;
         border-collapse: collapse;
+        transition: transform 0.3s ease;
+    }
+    table:hover {
+        transform: scale(1.02);
     }
     table, th, td {
         border: 1px solid black;
@@ -22,16 +26,53 @@
     th, td {
         padding: 15px;
         text-align: left;
+        transition: background-color 0.3s ease;
+    }
+    th:hover, td:hover {
+        background-color: #d1e7ff;
+    }
+    input, select {
+        display: block;
+        margin-bottom: 10px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    input:hover, select:hover {
+        background-color: #d1e7ff;
+        transform: scale(1.05);
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    button:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
+    }
+    a {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-top: 10px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    a:hover {
+        background-color: #0056b3;
+        transform: scale(1.1);
     }
   </style>
 </head>
 <body>
 <h1>Manage Attendance</h1>
-<form th:action="@{/attendance}" method="get">
-  <label for="date">Select Date:</label>
-  <input type="date" id="date" name="date" required>
-  <button type="submit">View Attendance</button>
-</form>
 <div th:if="${students != null}">
   <table>
     <tr>
@@ -56,6 +97,7 @@
     </tr>
   </table>
 </div>
-<a href="/teacherDashboard">Back to Dashboard</a>
+<a href="/teacherDashboard">Back</a>
+<a href="/teacherDashboard">Dashboard</a>
 </body>
 </html>

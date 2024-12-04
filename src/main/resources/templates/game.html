@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e);
+            animation: backgroundChange 10s infinite alternate;
+        }
+
+        @keyframes backgroundChange {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+            background: #f4f4f4;
+            border-radius: 10px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .cell:hover {
+            transform: scale(1.1);
+            background-color: #ffeb3b;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #888;
+            transform: scale(1.1);
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+            animation: bounceIn 1s ease-in;
+        }
+
+        @keyframes bounceIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .winner {
+            font-size: 2em;
+            color: #4caf50;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Tic-Tac-Toe</h1>
+    <div id="startScreen" class="input-section">
+        <input type="text" id="player1" placeholder="Enter Player 1 Name">
+        <input type="text" id="player2" placeholder="Enter Player 2 Name">
+        <button onclick="startGame()">Start Game</button>
+    </div>
+    <div id="gameScreen" style="display: none;">
+        <h2 id="currentPlayer"></h2>
+        <div id="grid" class="grid"></div>
+        <button onclick="resetGame()">Restart Game</button>
+    </div>
+</div>
+
+<script>
+    let player1, player2, currentPlayer;
+    const grid = document.getElementById('grid');
+    const startScreen = document.getElementById('startScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const currentPlayerDisplay = document.getElementById('currentPlayer');
+    const cells = [];
+
+    function startGame() {
+        player1 = document.getElementById('player1').value;
+        player2 = document.getElementById('player2').value;
+
+        if (!player1 || !player2) {
+            alert('Please enter both player names!');
+            return;
+        }
+
+        currentPlayer = 'X';
+        currentPlayerDisplay.innerText = `${player1}'s (X) turn`;
+        startScreen.style.display = 'none';
+        gameScreen.style.display = 'block';
+        createGrid();
+    }
+
+    function createGrid() {
+        grid.innerHTML = '';
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.addEventListener('click', () => makeMove(cell, i));
+            cells[i] = cell;
+            grid.appendChild(cell);
+        }
+    }
+
+    function makeMove(cell, index) {
+        if (cell.innerText === '') {
+            cell.innerText = currentPlayer;
+            if (checkWin()) {
+                setTimeout(() => {
+                    currentPlayerDisplay.innerHTML = `<span class="winner">${currentPlayer === 'X' ? player1 : player2} wins!</span>`;
+                    setTimeout(resetGame, 2000); // Reset game after 2 seconds
+                }, 200);
+            } else if (cells.every(cell => cell.innerText !== '')) {
+                setTimeout(() => {
+                    currentPlayerDisplay.innerHTML = `<span class="winner">It's a draw!</span>`;
+                    setTimeout(resetGame, 2000); // Reset game after 2 seconds
+                }, 200);
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                currentPlayerDisplay.innerText = `${currentPlayer === 'X' ? player1 : player2}'s (${currentPlayer}) turn`;
+            }
+        }
+    }
+
+    function checkWin() {
+        const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+
+        return winningCombinations.some(combination => {
+            return combination.every(index => cells[index].innerText === currentPlayer);
+        });
+    }
+
+    function resetGame() {
+        cells.forEach(cell => cell.innerText = '');
+        currentPlayer = 'X';
+        currentPlayerDisplay.innerText = `${player1}'s (X) turn`;
+    }
+</script>
+</body>
+</html>

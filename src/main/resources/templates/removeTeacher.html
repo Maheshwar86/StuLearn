@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remove Teacher</title>
+  <style>
+    body {
+      background: linear-gradient(to right, lightviolet, pink);
+      animation: gradient 10s infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
+
+    @keyframes gradient {
+      0% { background-color: lightviolet; }
+      50% { background-color: pink; }
+      100% { background-color: lightviolet; }
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: blue;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: green;
+    }
+
+    input {
+      margin: 10px 0;
+      padding: 5px;
+      width: calc(100% - 20px);
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      transform: scale(1.1);
+    }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .back-button:hover {
+      background-color: #FF69B4;
+    }
+  </style>
+</head>
+<body>
+<form th:action="@{/removeTeacher}" method="post">
+  <h1>Remove Teacher</h1>
+  <label for="id">Teacher ID:</label>
+  <input type="number" id="id" name="id" required>
+  <button type="submit">Remove Teacher</button>
+</form>
+<div th:if="${error}" th:text="${error}" style="color: red;"></div>
+<button class="back-button" onclick="location.href='/adminDashboard'">Back to Dashboard</button>
+</body>
+</html>
